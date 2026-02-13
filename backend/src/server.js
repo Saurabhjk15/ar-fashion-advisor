@@ -20,8 +20,21 @@ connectMongoDB();
 
 // Middleware
 app.use(helmet()); // Security headers
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://ar-fashion-advisor.vercel.app',
+  'https://stylesync-fashion.vercel.app',
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [])
+];
+
 app.use(cors({
-  origin: '*', // Allow all origins for production debugging
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
