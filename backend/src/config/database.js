@@ -14,10 +14,7 @@ export const connectMongoDB = async () => {
     }
 
     const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/arfashion';
-    const conn = await mongoose.connect(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const conn = await mongoose.connect(uri);
     logger.info(`✅ MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     logger.error(`❌ MongoDB Connection Error: ${error.message}`);

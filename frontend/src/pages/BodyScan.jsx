@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setBodyScanResults } from '../redux/slices/userSlice';
 import { calculateMeasurements, classifyBodyType, detectSkinTone, getBodyTypeInfo } from '../utils/bodyTypeUtils';
-import { Pose, POSE_CONNECTIONS } from '@mediapipe/pose';
+import { POSE_CONNECTIONS } from '@mediapipe/pose';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 export default function BodyScan() {
@@ -50,8 +50,13 @@ export default function BodyScan() {
         if (poseRef.current) return poseRef.current;
 
         addLog("Loading MediaPipe Pose...");
+        const Pose = window.Pose; // Access from global scope (CDN)
+        if (!Pose) {
+            setError("MediaPipe Pose library not loaded. Check internet connection.");
+            return;
+        }
         const pose = new Pose({
-            locateFile: (file) => `/mediapipe/pose/${file}`,
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
         });
 
         pose.setOptions({
