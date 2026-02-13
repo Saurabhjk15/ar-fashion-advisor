@@ -335,15 +335,15 @@ export default function BodyScan() {
                         {!cameraActive && !scanResult && (
                             <div className="relative z-20 text-center p-8 max-w-md">
                                 <span className="material-icons text-6xl text-primary/20 mb-6">sensors</span>
-                                <h2 className="text-2xl font-bold text-white mb-2 font-luxury">Biometric Initialization</h2>
+                                <h2 className="text-2xl font-bold text-white mb-2 font-luxury">Body Scan</h2>
                                 <p className="text-slate-500 text-sm leading-relaxed mb-8">
-                                    Authenticate via optical analysis to unlock your bespoke wardrobe matrix. Ensure full environmental lighting.
+                                    Use your camera to analyze your body type and get personalized clothing recommendations. Ensure good lighting for best results.
                                 </p>
                                 <button
                                     onClick={startCamera}
                                     className="bg-primary hover:bg-white hover:text-black text-black font-bold py-4 px-8 rounded-full transition-all tracking-[0.2em] text-xs uppercase shadow-gold"
                                 >
-                                    Activate Sensor Array
+                                    Start Camera
                                 </button>
                                 {/* Demo Mode Link */}
                                 <div className="mt-8 pt-8 border-t border-white/5">

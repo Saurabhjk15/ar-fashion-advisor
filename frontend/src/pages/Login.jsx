@@ -40,7 +40,7 @@ export default function Login() {
             })
             .catch((err) => {
                 console.error('Failed to login:', err);
-                // toast.error(err);
+                alert(`Login Failed: ${err}`);
             });
     };
 
@@ -181,9 +181,10 @@ export default function Login() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-transparent border border-primary hover:bg-primary hover:text-black text-primary font-bold py-4 rounded-lg transition-all duration-300 transform active:scale-95 shadow-gold uppercase tracking-widest text-xs"
+                                disabled={loading}
+                                className="w-full bg-transparent border border-primary hover:bg-primary hover:text-black text-primary font-bold py-4 rounded-lg transition-all duration-300 transform active:scale-95 shadow-gold uppercase tracking-widest text-xs disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Sign In
+                                {loading ? 'Accessing Secure Server...' : 'Sign In'}
                             </button>
                         </form>
 
