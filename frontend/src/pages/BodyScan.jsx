@@ -108,8 +108,8 @@ export default function BodyScan() {
     }, []);
 
     // Stop Camera
-    const stopCamera = useCallback(() => {
-        addLog("🛑 TERMINATING SENSORS...");
+    const stopCamera = useCallback((reason = "UNKNOWN") => {
+        addLog(`🛑 TERMINATING SENSORS (Reason: ${reason})...`);
         if (autoCaptureTimer) {
             clearTimeout(autoCaptureTimer.timer);
             clearInterval(autoCaptureTimer.interval);
@@ -137,9 +137,13 @@ export default function BodyScan() {
 
     // Capture Logic
     const handleCapture = useCallback(() => {
+        if (scanning) return; // Prevent double trigger
         setError(null);
         if (!landmarksRef.current) {
+            // Only stop if we really mean to fail? Or just wait?
+            // For now, let's just log and not stop, or wait for next frame.
             setError('NO SUBJECT DETECTED. ENSURE FULL TORSO VISIBILITY.');
+            // stopCamera("No subject"); // Don't stop, let them try again?
             return;
         }
 
@@ -158,7 +162,7 @@ export default function BodyScan() {
                 if (!measurements) {
                     setError('PROXIMITY ALERT: SUBJECT TOO CLOSE.');
                     setScanning(false);
-                    stopCamera();
+                    stopCamera("PROXIMITY ALERT");
                     return;
                 }
 
@@ -215,7 +219,7 @@ export default function BodyScan() {
                 setScanResult(result);
                 dispatch(setBodyScanResults({ measurements, bodyType }));
                 setScanning(false);
-                stopCamera();
+                stopCamera("SCAN SUCCESS");
             }
         }, 1000);
     }, [selectedOccasion, dispatch, stopCamera]);
@@ -272,7 +276,11 @@ export default function BodyScan() {
         if (cameraActive && stream && videoRef.current && poseRef.current) {
             const detectLoop = async () => {
                 if (cameraActive && videoRef.current && videoRef.current.readyState >= 2 && poseRef.current) {
-                    try { await poseRef.current.send({ image: videoRef.current }); } catch (e) { }
+                    try {
+                        await poseRef.current.send({ image: videoRef.current });
+                    } catch (e) {
+                        addLog(`POSE SEND ERROR: ${e.message}`);
+                    }
                 }
                 animationFrameId = requestAnimationFrame(detectLoop);
             };
