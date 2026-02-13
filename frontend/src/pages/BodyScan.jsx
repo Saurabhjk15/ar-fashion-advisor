@@ -56,7 +56,9 @@ export default function BodyScan() {
             return;
         }
         const pose = new Pose({
-            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+            locateFile: (file) => {
+                return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
+            }
         });
 
         pose.setOptions({
