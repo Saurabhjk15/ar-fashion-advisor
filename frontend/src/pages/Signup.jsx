@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { signup } from '../redux/slices/authSlice';
+import { signup, clearError } from '../redux/slices/authSlice';
 
 export default function Signup() {
     const [formData, setFormData] = useState({
@@ -21,10 +21,11 @@ export default function Signup() {
     const { isAuthenticated, error, loading } = useSelector((state) => state.auth);
 
     useEffect(() => {
+        dispatch(clearError());
         if (isAuthenticated) {
             navigate('/');
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, navigate, dispatch]);
 
     const handleChange = (e) => {
         const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;

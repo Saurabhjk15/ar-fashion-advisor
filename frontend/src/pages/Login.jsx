@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { login } from '../redux/slices/authSlice';
+import { login, clearError } from '../redux/slices/authSlice';
 
 export default function Login() {
     const [formData, setFormData] = useState({
@@ -18,13 +18,14 @@ export default function Login() {
     const location = useLocation();
 
     useEffect(() => {
+        dispatch(clearError()); // Clear any previous errors on mount
         if (isAuthenticated) {
             const from = location.state?.from?.pathname || '/';
             // Preserve the state if it exists (e.g., product data for AR Try-On)
             const state = location.state?.from?.state || {};
             navigate(from, { state, replace: true });
         }
-    }, [isAuthenticated, navigate, location]);
+    }, [isAuthenticated, navigate, location, dispatch]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
