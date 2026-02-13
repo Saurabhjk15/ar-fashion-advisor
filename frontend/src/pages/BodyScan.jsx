@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setBodyScanResults } from '../redux/slices/userSlice';
 import { calculateMeasurements, classifyBodyType, detectSkinTone, getBodyTypeInfo } from '../utils/bodyTypeUtils';
-import { POSE_CONNECTIONS } from '@mediapipe/pose';
-import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
+// Imports removed - using CDN globals
+// import { POSE_CONNECTIONS } from '@mediapipe/pose';
+// import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 export default function BodyScan() {
     const navigate = useNavigate();
@@ -90,15 +91,23 @@ export default function BodyScan() {
 
             if (results.poseLandmarks) {
                 landmarksRef.current = results.poseLandmarks;
-                drawConnectors(ctx, results.poseLandmarks, POSE_CONNECTIONS, {
-                    color: 'rgba(198, 167, 94, 0.6)', // Primary Gold
-                    lineWidth: 2,
-                });
-                drawLandmarks(ctx, results.poseLandmarks, {
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    lineWidth: 1,
-                    radius: 3,
-                });
+                const drawConnectors = window.drawConnectors;
+                const drawLandmarks = window.drawLandmarks;
+                const POSE_CONNECTIONS = window.POSE_CONNECTIONS;
+
+                if (drawConnectors && POSE_CONNECTIONS) {
+                    drawConnectors(ctx, results.poseLandmarks, POSE_CONNECTIONS, {
+                        color: 'rgba(198, 167, 94, 0.6)', // Primary Gold
+                        lineWidth: 2,
+                    });
+                }
+                if (drawLandmarks) {
+                    drawLandmarks(ctx, results.poseLandmarks, {
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        lineWidth: 1,
+                        radius: 3,
+                    });
+                }
             }
             ctx.restore();
         });

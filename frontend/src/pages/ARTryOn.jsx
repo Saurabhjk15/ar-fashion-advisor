@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Pose } from '@mediapipe/pose';
+// import { Pose } from '@mediapipe/pose'; // Using CDN
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
@@ -59,8 +59,16 @@ export default function ARTryOn() {
     // Initialize MediaPipe Pose
     const initializePose = useCallback(async () => {
         try {
+            const Pose = window.Pose;
+            if (!Pose) {
+                console.error("MediaPipe Pose not found in window");
+                toast.error("AR Engine Failed: Check Internet Connection");
+                setLoading(false);
+                return;
+            }
+
             const pose = new Pose({
-                locateFile: (file) => `/mediapipe/pose/${file}`,
+                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`,
             });
 
             pose.setOptions({
