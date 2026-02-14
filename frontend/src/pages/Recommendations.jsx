@@ -47,7 +47,14 @@ export default function Recommendations() {
             imageUrl: customOutfit.preview,
             price: { amount: 0 },
             description: customOutfit.description || 'User uploaded item',
-            isCustom: true
+            isCustom: true,
+            arMeta: {
+                category: customOutfit.category,
+                anchor: customOutfit.category === 'bottom' ? 'hips' : customOutfit.category === 'dress' ? 'shoulders' : 'shoulders',
+                scaleMultiplier: 1.0,
+                offsetX: 0,
+                offsetY: 0
+            }
         };
         navigate('/ar-tryon', { state: { product, bodyType, skinTone, occasion } });
     };
@@ -346,6 +353,8 @@ function getDemoProducts(bodyType, skinTone, occasion) {
             occasions: ['formal', 'office', 'casual', 'date'],
             style: 'classic', description: 'Timeless white shirt for any occasion. Sharp collar detailing frames the face while the structured cotton maintains a crisp professional silhouette throughout the day.',
             price: { amount: 39.99 },
+            arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png',
+            arMeta: { category: 'top', anchor: 'shoulders', scaleMultiplier: 1.15, offsetX: 0, offsetY: 0.1 }
         },
         {
             _id: 'd2', name: 'Navy V-Neck Blouse', category: 'top',

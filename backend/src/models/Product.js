@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema({
     },
 
     // AR try-on image (transparent PNG)
-    tryOnImage: {
+    arAssetImage: {
         type: String,
         default: null,
     },

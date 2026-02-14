@@ -43,6 +43,8 @@ router.get('/recommend', async (req, res) => {
         // Build match query
         const matchQuery = { isActive: true, bodyTypes: { $in: [bodyType] } };
         if (gender) matchQuery.gender = { $in: [gender, 'unisex'] };
+        // STRICT FILTERING: Only show products that match the selected occasion
+        if (occasion) matchQuery.occasions = { $in: [occasion] };
 
         // Use aggregation to score matches
         const products = await Product.aggregate([
@@ -54,6 +56,8 @@ router.get('/recommend', async (req, res) => {
                         $sum: [
                             1, // bodyType already matched
                             skinTone ? { $cond: [{ $in: [skinTone, '$skinTones'] }, 1, 0] } : 0,
+                            // Occasion is now a hard filter, but we can still add to score for ranking if needed, 
+                            // or just rely on the filter. Let's keep it to boost "perfect" matches.
                             occasion ? { $cond: [{ $in: [occasion, '$occasions'] }, 1, 0] } : 0,
                         ],
                     },

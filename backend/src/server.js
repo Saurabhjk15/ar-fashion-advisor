@@ -1,3 +1,4 @@
+console.log('Starting server.js...');
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -22,6 +23,8 @@ connectMongoDB();
 app.use(helmet()); // Security headers
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:5174',
   'https://ar-fashion-advisor.vercel.app',
   'https://stylesync-fashion.vercel.app',
   ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [])

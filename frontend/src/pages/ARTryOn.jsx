@@ -21,23 +21,107 @@ export default function ARTryOn() {
         scale: 1.0,
         offsetX: 0,
         offsetY: 0,
-        opacity: 0.85,
+        opacity: 1.0,
     });
 
-    // Load clothing image
+    // Load and process clothing image with Fallback Strategy
     useEffect(() => {
         if (!product) return;
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => { clothingImgRef.current = img; };
-        img.onerror = () => {
-            console.warn('Failed to load try-on image, using display image');
-            const fallback = new Image();
-            fallback.crossOrigin = 'anonymous';
-            fallback.onload = () => { clothingImgRef.current = fallback; };
-            fallback.src = product.imageUrl;
+
+        const PLACEHOLDER_ASSET = 'https://i.ibb.co/hf048X0/white-shirt-transparent.png'; // Fallback
+
+        const removeBackground = (sourceImg) => {
+            return new Promise((resolve, reject) => {
+                try {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = sourceImg.width;
+                    canvas.height = sourceImg.height;
+                    ctx.drawImage(sourceImg, 0, 0);
+
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    const tolerance = 20;
+
+                    let isAllWhite = true;
+                    for (let i = 0; i < data.length; i += 4) {
+                        const r = data[i];
+                        const g = data[i + 1];
+                        const b = data[i + 2];
+                        if (r < 240 || g < 240 || b < 240) isAllWhite = false;
+
+                        if (r > 255 - tolerance && g > 255 - tolerance && b > 255 - tolerance) {
+                            data[i + 3] = 0;
+                        }
+                    }
+                    if (isAllWhite) {
+                        reject(new Error('Image appears empty after processing'));
+                        return;
+                    }
+
+                    ctx.putImageData(imageData, 0, 0);
+                    const processedImg = new Image();
+                    processedImg.onload = () => resolve(processedImg);
+                    processedImg.onerror = reject;
+                    processedImg.src = canvas.toDataURL();
+                } catch (err) {
+                    reject(err);
+                }
+            });
         };
-        img.src = product.tryOnImage || product.imageUrl;
+
+        const loadImage = (src) => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
+        };
+
+        const executeAssetPipeline = async () => {
+            setLoading(true);
+
+            // PRIORITY 1: AR Asset (Transparent PNG)
+            if (product.arAssetImage) {
+                try {
+                    const img = await loadImage(product.arAssetImage);
+                    clothingImgRef.current = img;
+                    setLoading(false);
+                    return;
+                } catch (err) {
+                    console.warn('Priority 1 Failed: AR Asset not loadable. Trying Priority 2.', err);
+                }
+            }
+
+            // PRIORITY 2: Background Removal on Model Image
+            if (product.imageUrl) {
+                try {
+                    const rawImg = await loadImage(product.imageUrl);
+                    const processedImg = await removeBackground(rawImg);
+                    clothingImgRef.current = processedImg;
+                    setLoading(false);
+                    return;
+                } catch (err) {
+                    console.warn('Priority 2 Failed: Background removal failed. Trying Priority 3.', err);
+                }
+            }
+
+            // PRIORITY 3: Fallback Placeholder
+            try {
+                const placeholder = await loadImage(PLACEHOLDER_ASSET);
+                clothingImgRef.current = placeholder;
+                setLoading(false);
+                toast('Using fallback visualization', { icon: '🧥' });
+            } catch (err) {
+                console.error('Critical Failure: Placeholder failed.', err);
+                setLoading(false);
+                toast.error('Visualization Unavailable');
+            }
+        };
+
+        executeAssetPipeline();
     }, [product]);
 
     // Start camera
@@ -149,43 +233,72 @@ export default function ARTryOn() {
         const bodyWidth = Math.sqrt((shoulderR.x - shoulderL.x) ** 2 + (shoulderR.y - shoulderL.y) ** 2);
 
         let drawX, drawY, drawW, drawH;
-        const category = product?.category || 'top';
+
+        // Metadata-driven Logic
+        const arMeta = product?.arMeta || {};
+        const category = arMeta.category || product?.category || 'top';
+        const anchor = arMeta.anchor || (category === 'bottom' ? 'hips' : 'shoulders');
+        const baseScale = arMeta.scaleMultiplier || 1.0;
+        const metaOffsetX = arMeta.offsetX || 0;
+        const metaOffsetY = arMeta.offsetY || 0;
+
         const currentAdjustments = adjustmentsRef.current;
-        const scale = currentAdjustments.scale;
+        const userScale = currentAdjustments.scale;
 
-        const centerX = (shoulderL.x + shoulderR.x) / 2;
-        const shoulderY = (shoulderL.y + shoulderR.y) / 2;
-
-        if (category === 'top' || category === 'outerwear') {
-            drawW = bodyWidth * 2.8 * scale;
-            drawH = drawW * (img.height / img.width);
-            drawX = centerX - drawW / 2;
-            drawY = shoulderY - drawH * 0.15;
-        } else if (category === 'dress') {
-            drawW = bodyWidth * 2.6 * scale;
-            drawH = drawW * (img.height / img.width);
-            drawX = centerX - drawW / 2;
-            drawY = shoulderY - drawH * 0.1;
-        } else if (category === 'bottom') {
-            const hipCenterX = (hipL.x + hipR.x) / 2;
-            const hipY = (hipL.y + hipR.y) / 2;
-            drawW = bodyWidth * 2.4 * scale;
-            drawH = drawW * (img.height / img.width);
-            drawX = hipCenterX - drawW / 2;
-            drawY = hipY - drawH * 0.1;
+        // Calculate Anchor Point
+        let anchorX, anchorY;
+        if (anchor === 'hips') {
+            anchorX = (hipL.x + hipR.x) / 2;
+            anchorY = (hipL.y + hipR.y) / 2;
+        } else if (anchor === 'waist') {
+            // Approximation of waist between shoulders and hips
+            anchorX = (shoulderL.x + shoulderR.x + hipL.x + hipR.x) / 4;
+            anchorY = (shoulderL.y + shoulderR.y + hipL.y + hipR.y) / 4;
         } else {
-            drawW = bodyWidth * 2.5 * scale;
-            drawH = drawW * (img.height / img.width);
-            drawX = centerX - drawW / 2;
-            drawY = shoulderY;
+            // Shoulders (Default)
+            anchorX = (shoulderL.x + shoulderR.x) / 2;
+            anchorY = (shoulderL.y + shoulderR.y) / 2;
         }
 
-        drawX += currentAdjustments.offsetX * 2;
+        // Calculate Dimensions based on Category & Metadata
+        if (category === 'top' || category === 'outerwear') {
+            drawW = bodyWidth * 3.4 * baseScale * userScale;
+            drawH = drawW * (img.height / img.width);
+            drawX = anchorX - drawW / 2;
+            // Default offset for tops usually needs to be slightly above shoulders to cover neck
+            drawY = anchorY - (drawH * 0.18) + (metaOffsetY * canvas.height);
+        } else if (category === 'dress') {
+            drawW = bodyWidth * 3.0 * baseScale * userScale;
+            drawH = drawW * (img.height / img.width);
+            drawX = anchorX - drawW / 2;
+            drawY = anchorY - (drawH * 0.12) + (metaOffsetY * canvas.height);
+        } else if (category === 'bottom') {
+            drawW = bodyWidth * 2.4 * baseScale * userScale;
+            drawH = drawW * (img.height / img.width);
+            drawX = anchorX - drawW / 2;
+            // Bottoms usually start at hips/waist
+            drawY = anchorY - (drawH * 0.1) + (metaOffsetY * canvas.height);
+        } else {
+            drawW = bodyWidth * 2.5 * baseScale * userScale;
+            drawH = drawW * (img.height / img.width);
+            drawX = anchorX - drawW / 2;
+            drawY = anchorY + (metaOffsetY * canvas.height);
+        }
+
+        // Apply User Adjustments (Pixel based shift from UI controls)
+        drawX += currentAdjustments.offsetX * 2 + (metaOffsetX * canvas.width);
+        // Note: We already applied metaOffsetY in the drawY calculation relative to body parts, 
+        // but user offset is absolute pixels.
         drawY += currentAdjustments.offsetY * 2;
 
         ctx.save();
         ctx.globalAlpha = currentAdjustments.opacity;
         ctx.drawImage(img, drawX, drawY, drawW, drawH);
+
+        // Debug Anchors (Optional - can remove for prod)
+        // ctx.fillStyle = 'red';
+        // ctx.beginPath(); ctx.arc(anchorX, anchorY, 5, 0, 2*Math.PI); ctx.fill();
+
         ctx.restore();
     };
 
@@ -197,6 +310,7 @@ export default function ARTryOn() {
         link.click();
     };
 
+    // Video cleanup
     useEffect(() => {
         return () => {
             if (animRef.current) cancelAnimationFrame(animRef.current);
@@ -206,6 +320,16 @@ export default function ARTryOn() {
             }
         };
     }, []);
+
+    // Strict Stream Cleanup
+    useEffect(() => {
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                console.log('Camera stream stopped via cleanup');
+            }
+        };
+    }, [stream]);
 
     if (!product) {
         return (

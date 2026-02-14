@@ -12,7 +12,14 @@ const sampleProducts = [
         subCategory: 'shirt',
         gender: 'unisex',
         imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400',
-        tryOnImage: 'https://i.postimg.cc/white-shirt-tryon.png',
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png',
+        arMeta: {
+            category: 'top',
+            anchor: 'shoulders',
+            scaleMultiplier: 1.15,
+            offsetX: 0,
+            offsetY: 0.1
+        },
         bodyTypes: ['rectangle', 'hourglass', 'inverted-triangle'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown', 'dark'],
         occasions: ['formal', 'office', 'casual', 'date'],
@@ -27,7 +34,14 @@ const sampleProducts = [
         subCategory: 'blouse',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/4Tqj2Xz/navy-blouse-transparent.png',
+        arMeta: {
+            category: 'top',
+            anchor: 'shoulders',
+            scaleMultiplier: 1.1,
+            offsetX: 0,
+            offsetY: 0.05
+        },
         bodyTypes: ['apple', 'pear', 'hourglass'],
         skinTones: ['fair', 'light', 'medium'],
         occasions: ['office', 'casual', 'date'],
@@ -42,7 +56,14 @@ const sampleProducts = [
         subCategory: 'crop-top',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/wzn22Xk/black-crop-transparent.png',
+        arMeta: {
+            category: 'top',
+            anchor: 'shoulders', // Or chest ideally, but shoulders is standard
+            scaleMultiplier: 1.0,
+            offsetX: 0,
+            offsetY: 0.05
+        },
         bodyTypes: ['hourglass', 'rectangle', 'inverted-triangle'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown', 'dark'],
         occasions: ['party', 'casual', 'date'],
@@ -57,7 +78,14 @@ const sampleProducts = [
         subCategory: 'peplum',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder transparent asset
+        arMeta: {
+            category: 'top',
+            anchor: 'waist', // Peplum fits at waist
+            scaleMultiplier: 1.1,
+            offsetX: 0,
+            offsetY: 0
+        },
         bodyTypes: ['rectangle', 'inverted-triangle'],
         skinTones: ['medium', 'olive', 'brown'],
         occasions: ['casual', 'date', 'party'],
@@ -72,7 +100,8 @@ const sampleProducts = [
         subCategory: 't-shirt',
         gender: 'male',
         imageUrl: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'top', anchor: 'shoulders', scaleMultiplier: 1.1, offsetX: 0, offsetY: 0.1 },
         bodyTypes: ['rectangle', 'inverted-triangle', 'hourglass'],
         skinTones: ['medium', 'olive', 'brown', 'dark'],
         occasions: ['casual', 'date'],
@@ -89,7 +118,8 @@ const sampleProducts = [
         subCategory: 'trousers',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/4Tqj2Xz/navy-blouse-transparent.png', // Placeholder (Using blouse as placeholder for transparent asset test)
+        arMeta: { category: 'bottom', anchor: 'hips', scaleMultiplier: 1.2, offsetX: 0, offsetY: 0 },
         bodyTypes: ['pear', 'hourglass', 'apple'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown', 'dark'],
         occasions: ['office', 'formal', 'casual'],
@@ -104,7 +134,8 @@ const sampleProducts = [
         subCategory: 'jeans',
         gender: 'unisex',
         imageUrl: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/wzn22Xk/black-crop-transparent.png', // Placeholder
+        arMeta: { category: 'bottom', anchor: 'hips', scaleMultiplier: 1.1, offsetX: 0, offsetY: 0 },
         bodyTypes: ['rectangle', 'hourglass', 'inverted-triangle'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown', 'dark'],
         occasions: ['casual', 'date', 'party'],
@@ -119,7 +150,8 @@ const sampleProducts = [
         subCategory: 'skirt',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'bottom', anchor: 'hips', scaleMultiplier: 1.1, offsetX: 0, offsetY: 0 },
         bodyTypes: ['pear', 'apple', 'rectangle'],
         skinTones: ['fair', 'light', 'medium'],
         occasions: ['office', 'casual', 'date', 'wedding'],
@@ -134,7 +166,8 @@ const sampleProducts = [
         subCategory: 'chinos',
         gender: 'male',
         imageUrl: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'bottom', anchor: 'hips', scaleMultiplier: 1.1, offsetX: 0, offsetY: 0 },
         bodyTypes: ['rectangle', 'inverted-triangle', 'hourglass'],
         skinTones: ['fair', 'light', 'medium', 'olive'],
         occasions: ['office', 'casual', 'date'],
@@ -151,7 +184,8 @@ const sampleProducts = [
         subCategory: 'wrap-dress',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/4Tqj2Xz/navy-blouse-transparent.png', // Placeholder
+        arMeta: { category: 'dress', anchor: 'shoulders', scaleMultiplier: 1.2, offsetX: 0, offsetY: 0 },
         bodyTypes: ['hourglass', 'pear', 'apple'],
         skinTones: ['medium', 'olive', 'brown', 'dark'],
         occasions: ['date', 'party', 'wedding', 'office'],
@@ -166,7 +200,8 @@ const sampleProducts = [
         subCategory: 'shift-dress',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/wzn22Xk/black-crop-transparent.png', // Placeholder
+        arMeta: { category: 'dress', anchor: 'shoulders', scaleMultiplier: 1.1, offsetX: 0, offsetY: 0 },
         bodyTypes: ['rectangle', 'apple', 'inverted-triangle'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown', 'dark'],
         occasions: ['party', 'formal', 'date', 'office'],
@@ -181,7 +216,8 @@ const sampleProducts = [
         subCategory: 'maxi-dress',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'dress', anchor: 'shoulders', scaleMultiplier: 1.3, offsetX: 0, offsetY: 0 },
         bodyTypes: ['pear', 'hourglass', 'rectangle'],
         skinTones: ['fair', 'light', 'medium'],
         occasions: ['casual', 'beach', 'date', 'wedding'],
@@ -196,7 +232,8 @@ const sampleProducts = [
         subCategory: 'bodycon',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/4Tqj2Xz/navy-blouse-transparent.png', // Placeholder
+        arMeta: { category: 'dress', anchor: 'shoulders', scaleMultiplier: 1.1, offsetX: 0, offsetY: 0 },
         bodyTypes: ['hourglass'],
         skinTones: ['fair', 'light', 'medium', 'olive'],
         occasions: ['party', 'date'],
@@ -213,7 +250,8 @@ const sampleProducts = [
         subCategory: 'blazer',
         gender: 'unisex',
         imageUrl: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'outerwear', anchor: 'shoulders', scaleMultiplier: 1.25, offsetX: 0, offsetY: 0.1 },
         bodyTypes: ['rectangle', 'pear', 'apple'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown', 'dark'],
         occasions: ['formal', 'office', 'date'],
@@ -228,7 +266,8 @@ const sampleProducts = [
         subCategory: 'trench',
         gender: 'unisex',
         imageUrl: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'outerwear', anchor: 'shoulders', scaleMultiplier: 1.35, offsetX: 0, offsetY: 0.1 },
         bodyTypes: ['hourglass', 'rectangle', 'inverted-triangle'],
         skinTones: ['fair', 'light', 'medium', 'olive'],
         occasions: ['formal', 'office', 'casual'],
@@ -243,7 +282,8 @@ const sampleProducts = [
         subCategory: 'jacket',
         gender: 'unisex',
         imageUrl: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/wzn22Xk/black-crop-transparent.png', // Placeholder
+        arMeta: { category: 'outerwear', anchor: 'shoulders', scaleMultiplier: 1.15, offsetX: 0, offsetY: 0.1 },
         bodyTypes: ['rectangle', 'hourglass', 'inverted-triangle', 'pear', 'apple'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown', 'dark'],
         occasions: ['casual', 'party', 'date'],
@@ -258,7 +298,8 @@ const sampleProducts = [
         subCategory: 'jacket',
         gender: 'unisex',
         imageUrl: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'outerwear', anchor: 'shoulders', scaleMultiplier: 1.15, offsetX: 0, offsetY: 0.1 },
         bodyTypes: ['rectangle', 'pear', 'hourglass'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown'],
         occasions: ['casual', 'date', 'beach'],
@@ -275,7 +316,8 @@ const sampleProducts = [
         subCategory: 'necklace',
         gender: 'female',
         imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'accessory', anchor: 'shoulders', scaleMultiplier: 0.4, offsetX: 0, offsetY: -0.1 },
         bodyTypes: ['rectangle', 'pear', 'apple', 'hourglass', 'inverted-triangle'],
         skinTones: ['medium', 'olive', 'brown', 'dark'],
         occasions: ['party', 'wedding', 'date', 'formal'],
@@ -290,7 +332,8 @@ const sampleProducts = [
         subCategory: 'watch',
         gender: 'unisex',
         imageUrl: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'accessory', anchor: 'hips', scaleMultiplier: 0.2, offsetX: 0.3, offsetY: 0.2 },
         bodyTypes: ['rectangle', 'pear', 'apple', 'hourglass', 'inverted-triangle'],
         skinTones: ['fair', 'light', 'medium'],
         occasions: ['office', 'formal', 'casual', 'date'],
@@ -305,7 +348,8 @@ const sampleProducts = [
         subCategory: 'belt',
         gender: 'unisex',
         imageUrl: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400',
-        tryOnImage: null,
+        arAssetImage: 'https://i.ibb.co/hf048X0/white-shirt-transparent.png', // Placeholder
+        arMeta: { category: 'accessory', anchor: 'waist', scaleMultiplier: 0.8, offsetX: 0, offsetY: 0 },
         bodyTypes: ['rectangle', 'inverted-triangle'],
         skinTones: ['fair', 'light', 'medium', 'olive', 'brown'],
         occasions: ['casual', 'office', 'formal'],
